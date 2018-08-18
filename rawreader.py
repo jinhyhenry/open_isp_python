@@ -4,7 +4,16 @@ import numpy as np
 raw_path = "test.raw"
 #raw_path = "test.dat"
 
-class raw_obj:
+class image_base:
+	def wait_for_key(self):
+		while True:
+			k = cv2.waitKey(0)
+			if k==27:
+				cv2.destroyAllWindows()
+				break
+		cv2.destroyAllWindows()
+
+class raw_obj(image_base):
 	def __init__(self,width,height,type_mask):
 		self.width = width
 		self.height = height
@@ -39,12 +48,35 @@ class raw_obj:
 			j += 1
 			i=i+5
 		print('convert_to_normal done')
+	def img_creater(self,type_mask):
+		if type_mask == 1:
+			print('going to create a 10th rgb')
+			img = np.zeros((self.width,self.height,3), np.uint16)
+		if type_mask == 9:
+			#test mode
+			img = np.zeros((512,512,3), np.uint8)
+			img.fill(128)
+			cv2.imshow('test',img)
+			self.wait_for_key()
 
-	def obj_test(self,need_dump):
-		print(self.ori_buf)
+	def obj_test(self,type_mask):
+		if type_mask == 1:
+			print(self.ori_buf)
+		if type_mask == 2:
+			print(self.normal_buf)
 
 
 if __name__ == '__main__':
 	raw0 = raw_obj(4608,3456,0)
-	raw0.obj_test(0)
+	raw0.obj_test(1)
 	raw0.convert_to_normal()
+	raw0.obj_test(2)
+	raw0.img_creater(9)
+
+
+
+
+
+
+
+
