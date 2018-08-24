@@ -48,10 +48,67 @@ class raw_obj(image_base):
 			j += 1
 			i=i+5
 		print('convert_to_normal done')
+
+
+	#BGBG....BGBG  0
+	#GRGR....GRGR  1
+	#0123
+	#
+
+	def loc_pixel_x(self,index):
+		return (int(index/(self.width)))
+
+	def loc_pixel_y(self,index):
+		return (int(index%(self.width)))
+
+	#R 1, G 2, B 2
+	def decide_which_pixel(self,index):
+		if (self.loc_pixel_x(index)%2): #GRGR
+			if(self.loc_pixel_y(index)%2): #R
+				return 1
+			else:
+				return 2
+		else:
+			if(self.loc_pixel_y(index)%2): #B
+				return 3
+			else:
+				return 2
+
 	def img_creater(self,type_mask):
 		if type_mask == 1:
 			print('going to create a 10th rgb')
 			img = np.zeros((self.width,self.height,3), np.uint16)
+			for i in range(self.normal_buf_length):
+				tmp = self.decide_which_pixel(i)
+				'''
+				if(tmp == 1):
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][0] = tmp
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][1] = 0
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][2] = 0
+				if(tmp == 2):
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][0] = 0
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][1] = tmp
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][2] = 0
+				if(tmp == 3):
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][0] = 0
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][1] = 0
+					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][2] = tmp
+				'''
+				if(tmp == 1):
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = self.normal_buf[i]
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = 0
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = 0
+				if(tmp == 2):
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = 0
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = self.normal_buf[i]
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = 0
+				if(tmp == 3):
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = 0
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = 0
+					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = self.normal_buf[i]
+			#cv2.imshow('test',img)
+			cv2.imwrite('res.jpg',img)
+
 		if type_mask == 9:
 			#test mode
 			img = np.zeros((512,512,3), np.uint8)
@@ -64,14 +121,20 @@ class raw_obj(image_base):
 			print(self.ori_buf)
 		if type_mask == 2:
 			print(self.normal_buf)
+		if type_mask == 3:
+			#test locate function
+			for i in range(self.normal_buf_length):
+				#print('index %d , decide_which_pixel %d' %(i,self.decide_which_pixel(i)))
+				print('i %d,x %d,y %d' %(i,self.loc_pixel_x(i),self.loc_pixel_y(i)))
+				#print('y %d' %(self.loc_pixel_y(i)))
 
 
 if __name__ == '__main__':
 	raw0 = raw_obj(4608,3456,0)
 	raw0.obj_test(1)
 	raw0.convert_to_normal()
-	raw0.obj_test(2)
-	raw0.img_creater(9)
+	#raw0.obj_test(3)
+	raw0.img_creater(1)
 
 
 
