@@ -36,15 +36,20 @@ class raw_obj(image_base):
 	def convert_to_normal(self):
 		i = 0
 		j = 0
-		while i<self.normal_buf_length:
+		while i<self.ori_buf_length:
 			common_byte = int(self.ori_buf[i])
+			#print('common_byte %d' %(common_byte))
 			self.normal_buf[j] = (int(self.ori_buf[i+4])<<2)+(0x03&common_byte) #P0
+			#print('i %d ori_buf %d normal_buf %d' %(i,self.ori_buf[i+4],self.normal_buf[j]))
 			j += 1
 			self.normal_buf[j] = (int(self.ori_buf[i+3])<<2)+(0x0C&common_byte) #P1
+			#print('i %d ori_buf %d normal_buf %d' %(i,self.ori_buf[i+3],self.normal_buf[j]))
 			j += 1
 			self.normal_buf[j] = (int(self.ori_buf[i+2])<<2)+(0x30&common_byte) #P2
+			#print('i %d ori_buf %d normal_buf %d' %(i,self.ori_buf[i+2],self.normal_buf[j]))
 			j += 1
 			self.normal_buf[j] = (int(self.ori_buf[i+1])<<2)+(0xC0&common_byte) #P3
+			#print('i %d ori_buf %d normal_buf %d' %(i,self.ori_buf[i+1],self.normal_buf[j]))
 			j += 1
 			i=i+5
 		print('convert_to_normal done')
@@ -106,8 +111,9 @@ class raw_obj(image_base):
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = self.normal_buf[i]
+				#print('index %d y %d , x %d, tmp %d, val %d' %(i, self.loc_pixel_y(i), self.loc_pixel_x(i), tmp, self.normal_buf[i]))
 			#cv2.imshow('test',img)
-			cv2.imwrite('res.jpg',img)
+			cv2.imwrite('res1.jpg',img)
 
 		if type_mask == 9:
 			#test mode
@@ -133,7 +139,6 @@ if __name__ == '__main__':
 	raw0 = raw_obj(4608,3456,0)
 	raw0.obj_test(1)
 	raw0.convert_to_normal()
-	#raw0.obj_test(3)
 	raw0.img_creater(1)
 
 
