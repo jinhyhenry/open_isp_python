@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import sys
 
 raw_path = "test.raw"
 #raw_path = "test.dat"
@@ -134,12 +135,6 @@ class raw_obj(image_base):
 				print('i %d,x %d,y %d' %(i,self.loc_pixel_x(i),self.loc_pixel_y(i)))
 				#print('y %d' %(self.loc_pixel_y(i)))
 
-
-if __name__ == '__main__':
-	raw0 = raw_obj(4608,3456,0)
-	raw0.obj_test(1)
-	raw0.convert_to_normal()
-	raw0.img_creater(1)
 
 
 
