@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import sys
 
-raw_path = "test.raw"
+raw_path = "/Users/henry/work/code/image_algo_own/own/open_isp_python/raw_reader/raw_img/blk/IMG_20180202_052800.raw"
 #raw_path = "test.dat"
 
 class image_base:
@@ -15,7 +15,7 @@ class image_base:
 		cv2.destroyAllWindows()
 
 class raw_obj(image_base):
-	def __init__(self,width,height,type_mask):
+	def __init__(self,width,height,type_mask,raw_path_set,out_file):
 		self.width = width
 		self.height = height
 		self.type = type_mask
@@ -24,9 +24,15 @@ class raw_obj(image_base):
 		self.ori_buf = np.zeros(self.ori_buf_length)
 		self.normal_buf = np.zeros(self.normal_buf_length)
 
+		self.r_buf = []
+		self.g_buf = []
+		self.b_buf = []
+
+		self.out_file = out_file
+
 		print(self.ori_buf_length)
 
-		raw_file = open(raw_path,'rb+')
+		raw_file = open(raw_path_set,'rb+')
 		raw_file.seek(0,0)
 		
 		i=0
@@ -100,21 +106,24 @@ class raw_obj(image_base):
 					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][1] = 0
 					img[self.loc_pixel_x(i)][self.loc_pixel_y(i)][2] = tmp
 				'''
-				if(tmp == 1):
+				if(tmp == 3):
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = self.normal_buf[i]
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = 0
+					self.r_buf.append(self.normal_buf[i])
 				if(tmp == 2):
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = self.normal_buf[i]
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = 0
-				if(tmp == 3):
+					self.g_buf.append(self.normal_buf[i])
+				if(tmp == 1):
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][0] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][1] = 0
 					img[self.loc_pixel_y(i)][self.loc_pixel_x(i)][2] = self.normal_buf[i]
+					self.b_buf.append(self.normal_buf[i])
 				#print('index %d y %d , x %d, tmp %d, val %d' %(i, self.loc_pixel_y(i), self.loc_pixel_x(i), tmp, self.normal_buf[i]))
 			#cv2.imshow('test',img)
-			cv2.imwrite('res1.jpg',img)
+			cv2.imwrite(self.out_file,img)
 
 		if type_mask == 9:
 			#test mode

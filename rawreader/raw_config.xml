@@ -1,0 +1,9 @@
+<RawConfigurationRoot>
+	<HardwareProp>
+		<name>ov16b10</name>
+		<width>4608</width>
+		<height>3456</height>
+		<type>1</type>
+		<bayer_pattern>BGGR</bayer_pattern>
+	</HardwareProp>
+</RawConfigurationRoot>
